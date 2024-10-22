@@ -1,0 +1,20 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background-color: #f8fafc;
+}
+
+.btn-primary {
+    @apply bg-primary-600 text-white px-4 py-2 rounded-md 
+      hover:bg-primary-700 transition-colors duration-200
+      disabled:opacity-50 disabled:cursor-not-allowed
+      flex items-center gap-2;
+
+    &:disabled {
+        @apply cursor-not-allowed;
+    }
+}
+
+.container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}

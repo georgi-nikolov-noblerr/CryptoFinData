@@ -1,0 +1,80 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: cryptofindata-sql
+    platform: linux/arm64
+    environment:
+      - ACCEPT_EULA=1
+      - MSSQL_SA_PASSWORD=CryptoFin123!
+      - TZ=UTC
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - cryptofindata-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "CryptoFin123!" -Q "SELECT 1" -b -1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: ../../docker/backend.Dockerfile
+    container_name: cryptofindata-backend
+    platform: linux/arm64
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;User Id=sa;Password=CryptoFin123!;TrustServerCertificate=True;ConnectRetryCount=5;ConnectRetryInterval=10
+      - Jwt__Key=your-super-secret-key-with-at-least-32-characters
+      - Jwt__Issuer=CryptoFinData
+      - Jwt__Audience=CryptoFinData.API
+    ports:
+      - "5242:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - cryptofindata-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+  
+  client:
+    build:
+      context: ./src/client
+      dockerfile: ../../docker/client.Dockerfile
+    container_name: cryptofindata-client
+    platform: linux/arm64
+    ports:
+      - "3242:80"
+    environment:
+      - VITE_API_URL=http://localhost:5242
+    depends_on:
+      - backend
+    networks:
+      - cryptofindata-network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+networks:
+  cryptofindata-network:
+    name: cryptofindata-network
+    driver: bridge
+
+volumes:
+  sqlserver_data:
+    name: cryptofindata_sqlserver_data

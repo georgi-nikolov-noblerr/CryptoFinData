@@ -1,0 +1,8 @@
+:host {
+    display: block;
+}
+
+.crypto-widget {
+    @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-all duration-200;
+    min-width: 300px;
+}

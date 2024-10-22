@@ -1,0 +1,16 @@
+<div class="crypto-widget">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">{{currencyLabel}}</h3>
+        <span class="text-sm text-gray-500">{{price?.source}}</span>
+    </div>
+
+    <div class="flex items-end gap-2">
+        <span class="text-3xl font-bold text-gray-900">
+            {{getPrice()}}
+        </span>
+    </div>
+
+    <div class="mt-4 text-sm text-gray-600">
+        Last updated: {{price?.timestamp }}
+    </div>
+</div>
