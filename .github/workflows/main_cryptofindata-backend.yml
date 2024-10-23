@@ -21,11 +21,11 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Build API project
+        run: dotnet build --configuration Release ./src/backend/CryptoFinData.API/CryptoFinData.API.csproj
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: dotnet publish API project
+        run: dotnet publish ./src/backend/CryptoFinData.API/CryptoFinData.API.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -51,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_26CD5076AADB4D9387644B59EC07116E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_22ECE41201614D2F8E437198059177BD }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4086E782402F47E0B2514A00439EF926 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5EE4E21F6CAA496C9E43D5179CA28DB3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B6F76F1BBA7741639A3CED7059ECAB0B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_CC387988C163416C93B1307AE65E6500 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
