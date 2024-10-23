@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5202/api'
+  apiUrl: 'https://cryptofindata-backend.azurewebsites.net/api'
 };

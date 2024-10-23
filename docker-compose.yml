@@ -1,4 +1,3 @@
-# docker-compose.yml
 version: '3.8'
 
 services:
@@ -60,7 +59,7 @@ services:
     ports:
       - "3242:80"
     environment:
-      - VITE_API_URL=http://localhost:5242
+      - VITE_API_URL=http://cryptofindata-backend:80
     depends_on:
       - backend
     networks:
