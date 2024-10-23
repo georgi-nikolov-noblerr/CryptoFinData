@@ -11,6 +11,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: CryptoDashboardComponent,
+    canActivate: [authGuard]
   },
   { 
     path: '', 

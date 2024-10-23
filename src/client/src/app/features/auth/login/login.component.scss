@@ -3,3 +3,18 @@
     min-height: 100vh;
     @apply bg-gray-50;
   }
+  
+  /* Add spinner animation */
+  .mat-icon.animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

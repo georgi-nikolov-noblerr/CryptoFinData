@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 [Authorize]
 [ApiController]
 [Route("api/crypto")]
+[AllowAnonymous]
 public class CryptoController : ControllerBase
 {
     private readonly ICryptoPriceService _cryptoPriceService;

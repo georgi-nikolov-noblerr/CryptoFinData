@@ -21,7 +21,7 @@ public class CryptoPriceService : ICryptoPriceService
                 Price: f.Random.Decimal(25000m, 45000m),
                 EurPrice: f.Random.Decimal(23000m, 42000m),
                 GbpPrice: f.Random.Decimal(21000m, 39000m),
-                Timestamp: f.Date.Recent(days: 30),
+                Timestamp: DateTime.UtcNow,
                 Source: "Historical Data"
             ));
     }
@@ -54,31 +54,22 @@ public class CryptoPriceService : ICryptoPriceService
     {
         try
         {
-            var days = (to - from).Days;
-            if (days <= 0) return Task.FromResult(Enumerable.Empty<CryptoPriceDto>());
-
-            var mockData = _faker
-                .Generate(days)
-                .OrderBy(p => p.Timestamp)
-                .ToList();
-
-            var currentIndex = 0;
-            var currentDate = from;
-            while (currentDate <= to)
+            if (from > to) return Task.FromResult(Enumerable.Empty<CryptoPriceDto>());
+            var totalDays = (to - from).Days + 1;
+            var mockData = new List<CryptoPriceDto>();
+            for (int i = 0; i < totalDays; i++)
             {
-                if (currentIndex < mockData.Count)
+                var currentDate = from.AddDays(i);
+
+                var priceDto = _faker.Generate() with
                 {
-                    var basePrice = mockData[currentIndex].Price;
-                    mockData[currentIndex] = mockData[currentIndex] with
-                    {
-                        Timestamp = currentDate,
-                        Price = basePrice + (decimal)(Math.Sin(currentDate.Hour * 0.5) * 1000),
-                        EurPrice = basePrice * 0.92m + (decimal)(Math.Sin(currentDate.Hour * 0.5) * 900),
-                        GbpPrice = basePrice * 0.85m + (decimal)(Math.Sin(currentDate.Hour * 0.5) * 800)
-                    };
-                }
-                currentDate = currentDate.AddDays(1);
-                currentIndex++;
+                    Timestamp = currentDate, 
+                    Price = _faker.Generate().Price,  
+                    EurPrice = _faker.Generate().Price,
+                    GbpPrice = _faker.Generate().Price
+                };
+
+                mockData.Add(priceDto);
             }
 
             return Task.FromResult<IEnumerable<CryptoPriceDto>>(mockData);

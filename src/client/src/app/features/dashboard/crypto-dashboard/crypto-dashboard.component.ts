@@ -8,6 +8,7 @@ import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { PriceWidgetComponent } from '../price-widget/price-widget.component';
 import { PriceChartComponent } from '../price-chart/price-chart.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
@@ -16,7 +17,8 @@ import { PriceChartComponent } from '../price-chart/price-chart.component';
   imports: [
     CommonModule,
     PriceWidgetComponent,
-    PriceChartComponent
+    PriceChartComponent,
+    MatIconModule
   ],
   templateUrl: './crypto-dashboard.component.html',
   styleUrls: ['./crypto-dashboard.component.scss']
@@ -24,7 +26,6 @@ import { PriceChartComponent } from '../price-chart/price-chart.component';
 export class CryptoDashboardComponent implements OnInit {
   private cryptoService = inject(CryptoService);
   
-  // State signals
   currentPrice = signal<CryptoPrice | null>(null);
   historicalPrices = signal<CryptoPrice[]>([]);
   loading = signal(true);

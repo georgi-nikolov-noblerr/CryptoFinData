@@ -6,11 +6,11 @@
 
     <div class="flex items-end gap-2">
         <span class="text-3xl font-bold text-gray-900">
-            {{getPrice()}}
+            {{getPrice() | currency:currencyCode:'symbol':'1.2-2'}}
         </span>
     </div>
 
     <div class="mt-4 text-sm text-gray-600">
-        Last updated: {{price?.timestamp }}
+        Last updated: {{price?.timestamp | date:'dd-MM-yyyy h:mm:ss a'}}
     </div>
 </div>

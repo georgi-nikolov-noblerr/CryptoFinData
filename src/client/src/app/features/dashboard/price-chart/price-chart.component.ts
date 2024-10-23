@@ -1,21 +1,28 @@
 import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
+import { CryptoService } from '../../../core/services/crypto.service';
 import { CryptoPrice } from '../../../core/models/crypto.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-price-chart',
   standalone: true,
   templateUrl: './price-chart.component.html',
-  styleUrls: ['./price-chart.component.scss']
+  styleUrls: ['./price-chart.component.scss'],
+  imports: [FormsModule]
 })
 export class PriceChartComponent implements OnInit, OnDestroy {
-  @ViewChild('chartCanvas') chartCanvas!: ElementRef;
+  @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
   @Input() historicalData: CryptoPrice[] = [];
 
   private chart: Chart | undefined;
+  selectedPeriod: number = 30;  // Default to 30 days
+  private today: Date = new Date();
+
+  constructor(private cryptoService: CryptoService) {}
 
   ngOnInit(): void {
-    this.initializeChart();
+    this.fetchDataForSelectedPeriod();
   }
 
   ngOnDestroy(): void {
@@ -24,8 +31,42 @@ export class PriceChartComponent implements OnInit, OnDestroy {
     }
   }
 
+  onPeriodChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;  // Type assertion
+    this.selectedPeriod = +selectElement.value;
+    this.fetchDataForSelectedPeriod();
+  }
+
+  private fetchDataForSelectedPeriod(): void {
+    const fromDate = this.calculateFromDate(this.selectedPeriod);
+    this.cryptoService.getHistoricalPrices(fromDate, this.today).subscribe(
+      data => {
+        this.historicalData = data;
+        this.initializeChart();
+      },
+      error => {
+        console.error('Failed to fetch historical data', error);
+      }
+    );
+  }
+
+  private calculateFromDate(period: number): Date {
+    const fromDate = new Date();
+    fromDate.setDate(this.today.getDate() - period);
+    return fromDate;
+  }
+
   private initializeChart(): void {
-    const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (this.chart) {
+      this.chart.destroy();  // Destroy previous chart instance
+    }
+
+    const ctx = this.chartCanvas?.nativeElement.getContext('2d');
+    if (!ctx) {
+      console.error('Canvas context not found');
+      return;
+    }
+
     const data = this.prepareChartData();
 
     const config: ChartConfiguration = {
@@ -119,14 +160,5 @@ export class PriceChartComponent implements OnInit, OnDestroy {
       ),
       prices: sortedData.map(data => data.price)
     };
-  }
-
-  ngOnChanges(): void {
-    if (this.chart) {
-      const data = this.prepareChartData();
-      this.chart.data.labels = data.labels;
-      this.chart.data.datasets[0].data = data.prices;
-      this.chart.update();
-    }
   }
 }

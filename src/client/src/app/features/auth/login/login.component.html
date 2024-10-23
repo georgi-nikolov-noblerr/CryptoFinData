@@ -1,1 +1,74 @@
-<p>login works!</p>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          CryptoFinData Dashboard
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          Sign in to access the dashboard
+        </p>
+      </div>
+  
+      <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div *ngIf="error" class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <mat-icon class="text-red-400">error</mat-icon>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-red-800">{{error}}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="username" class="sr-only">Username</label>
+            <input
+              id="username"
+              type="text"
+              formControlName="username"
+              [class.border-red-500]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+              placeholder="Username"
+            >
+            <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" 
+                 class="text-red-500 text-xs mt-1">
+              <span *ngIf="loginForm.get('username')?.errors?.['required']">Username is required</span>
+            </div>
+          </div>
+  
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              [class.border-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+              placeholder="Password"
+            >
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" 
+                 class="text-red-500 text-xs mt-1">
+              Password is required
+            </div>
+          </div>
+        </div>
+  
+        <div>
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid || loading"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+              <mat-icon *ngIf="loading" class="animate-spin text-white">autorenew</mat-icon>
+            </span>
+            {{ loading ? 'Signing in...' : 'Sign in' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
