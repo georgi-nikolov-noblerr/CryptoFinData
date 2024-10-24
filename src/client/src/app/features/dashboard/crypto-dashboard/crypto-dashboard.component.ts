@@ -6,8 +6,8 @@ import { CryptoPrice } from '../../../core/models/crypto.model';
 import { interval } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
-import { PriceWidgetComponent } from '../price-widget/price-widget.component';
-import { PriceChartComponent } from '../price-chart/price-chart.component';
+import { PriceWidgetComponent } from '../../../components/dashboard/price-widget/price-widget.component';
+import { PriceChartComponent } from '../../../components/dashboard/price-chart/price-chart.component';
 import { MatIconModule } from '@angular/material/icon';
 
 
